@@ -1,0 +1,7 @@
+.DesktopOnly {
+  @include respond(phone) {
+    .DesktopNav {
+      display: none;
+    }
+  }
+}

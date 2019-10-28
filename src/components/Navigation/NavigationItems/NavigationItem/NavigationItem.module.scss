@@ -1,0 +1,44 @@
+@import "src/sass/shared";
+
+.NavigationItem {
+  margin: 10px 0;
+  display: block;
+  width: 100%;
+
+  a {
+    color: $light-brown;
+    text-decoration: none;
+    width: 100%;
+    display: block;
+
+    &:hover,
+    &:active,
+    &.active {
+      color: $blue;
+    }
+  }
+
+  @include respond(tab-port) {
+    margin: 0;
+    height: 100%;
+    width: auto;
+    display: flex;
+    align-items: center;
+
+    a {
+      color: white;
+      text-decoration: none;
+      height: 100%;
+      padding: 16px 10px;
+      border-bottom: 4px solid transparent;
+
+      &:hover,
+      &:active,
+      &.active {
+        background-color: $light-brown;
+        border-bottom: 4px solid #40a4c8;
+        color: white;
+      }
+    }
+  }
+}
