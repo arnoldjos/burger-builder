@@ -6,6 +6,7 @@ import cssStyles from "./ContactData.module.scss";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
+import { connect } from "react-redux";
 
 class ContactData extends Component {
     state = {
@@ -112,13 +113,11 @@ class ContactData extends Component {
             formData[formEl] = this.state.orderForm[formEl].value;
         }
 
-        console.log(formData);
-
         const db = firebase.firestore();
         db.collection("orders")
             .add({
                 ingredients: this.props.ingredients,
-                totalPrice: this.props.price,
+                totalPrice: this.props.totalPrice,
                 orderedDate: new Date(),
                 ...formData
             })
@@ -128,7 +127,6 @@ class ContactData extends Component {
             })
             .catch(e => {
                 this.setState({ loading: false });
-                console.log(e);
             });
     };
 
@@ -158,8 +156,6 @@ class ContactData extends Component {
             .setIn([inputIdent, "touched"], true)
             .toJS();
         const formIsValid = this.checkFormValidity(updatedOrderForm);
-
-        console.log(updatedOrderForm);
 
         this.setState({ orderForm: updatedOrderForm, formIsValid });
     };
@@ -216,4 +212,11 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+    return {
+        ingredients: state.ingredients,
+        totalPrice: state.totalPrice
+    };
+};
+
+export default connect(mapStateToProps)(ContactData);
