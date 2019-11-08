@@ -6,13 +6,13 @@ import NavigationItems from "../NavigationItems/NavigationItems";
 import DrawerToggle from "../SideDrawer/DrawerToggle/DrawerToggle";
 
 const Toolbar = props => (
-  <header className={cssStyles.Toolbar}>
-    <DrawerToggle clicked={props.drawerToggleClicked} />
-    <Logo height="80%" />
-    <nav className={cssStyles.DesktopNav}>
-      <NavigationItems />
-    </nav>
-  </header>
+    <header className={cssStyles.Toolbar}>
+        <DrawerToggle clicked={props.drawerToggleClicked} />
+        <Logo height="80%" />
+        <nav className={cssStyles.DesktopNav}>
+            <NavigationItems isAuth={props.isAuth} />
+        </nav>
+    </header>
 );
 
 export default Toolbar;

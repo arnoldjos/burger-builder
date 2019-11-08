@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/auth";
+
 const config = {
     apiKey: "AIzaSyD2cA7ewxbcxX0UWJF6gFdnkmCHRbIhqdU",
     authDomain: "burger-builder-fb26d.firebaseapp.com",

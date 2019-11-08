@@ -8,16 +8,26 @@ const withErrorHandler = (WrappedComponent, axios) => {
             error: null
         };
 
-        componentDidMount() {
-            axios.interceptors.reqest.use(req => {
+        constructor(props) {
+            super(props);
+            this.reqInterceptor = axios.interceptors.request.use(req => {
                 this.setState({ error: null });
+                return req;
             });
-            axios.interceptors.response.use(null, error => {
-                this.setState({ error });
-            });
+            this.resInterceptor = axios.interceptors.response.use(
+                res => res,
+                error => {
+                    this.setState({ error: error });
+                }
+            );
         }
 
-        errorConfirmedHanlder = () => {
+        componentWillUnmount() {
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.response.eject(this.resInterceptor);
+        }
+
+        errorConfirmedHandler = () => {
             this.setState({ error: null });
         };
 
@@ -26,11 +36,9 @@ const withErrorHandler = (WrappedComponent, axios) => {
                 <React.Fragment>
                     <Modal
                         show={this.state.error}
-                        clicked={this.errorConfirmedHanlder}
+                        modalClosed={this.errorConfirmedHandler}
                     >
-                        <p style={{ textAlign: "center" }}>
-                            {this.state.error ? this.state.error.message : null}
-                        </p>
+                        {this.state.error ? this.state.error.message : null}
                     </Modal>
                     <WrappedComponent {...this.props} />
                 </React.Fragment>

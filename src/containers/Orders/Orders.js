@@ -1,63 +1,50 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import firebase from '../../config/firebase';
-import Order from '../../components/Order/Order';
-import Spinner from '../../components/UI/Spinner/Spinner';
-import { fetchOrders } from '../../store/actions/';
+import Order from "../../components/Order/Order";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import { fetchOrders } from "../../store/actions/";
+import axios from "../../config/axios";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 class Orders extends Component {
-	async componentDidMount() {
-		this.props.onFetchOrder();
-	}
+    async componentDidMount() {
+        this.props.onFetchOrder(this.props.userId);
+    }
 
-	// loadData = () => {
-	// 	const db = firebase.firestore();
-	// 	db.collection('orders')
-	// 		.get()
-	// 		.then(querySnapshot => {
-	// 			const items = [];
-	// 			querySnapshot.forEach(doc => {
-	// 				items.push({
-	// 					id: doc.id,
-	// 					...doc.data()
-	// 				});
-	// 			});
-	// 			this.setState({ orders: items, loading: false });
-	// 		});
-	// };
+    render() {
+        let orders = <Spinner />;
 
-	render() {
-		let orders = <Spinner />;
+        if (!this.props.loading) {
+            orders = this.props.orders.map(order => (
+                <Order
+                    ingredients={order.ingredients}
+                    price={order.totalPrice}
+                    key={order.id}
+                />
+            ));
+        }
 
-		if (!this.props.loading) {
-			orders = this.props.orders.map(order => (
-				<Order
-					ingredients={order.ingredients}
-					price={order.totalPrice}
-					key={order.id}
-				/>
-			));
-		}
-
-		return <div>{orders}</div>;
-	}
+        return <div>{orders}</div>;
+    }
 }
 
 const mapStateToProps = state => {
-	return {
-		loading: state.order.loading,
-		orders: state.order.orders
-	};
+    return {
+        loading: state.order.loading,
+        orders: state.order.orders,
+        token: state.auth.token,
+        userId: state.auth.userId
+    };
 };
 
 const mapDispatchToProps = dispatch => {
-	return {
-		onFetchOrder: () => dispatch(fetchOrders())
-	};
+    return {
+        onFetchOrder: userId => dispatch(fetchOrders(userId))
+    };
 };
 
 export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Orders);
+    mapStateToProps,
+    mapDispatchToProps
+)(withErrorHandler(Orders, axios));
