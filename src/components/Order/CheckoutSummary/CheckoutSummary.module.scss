@@ -1,11 +1,11 @@
-@import "src/sass/shared";
+@import 'src/sass/shared';
 
 .CheckoutSummary {
-    text-align: center;
-    width: 100%;
-    margin: auto;
+	text-align: center;
+	width: 100%;
+	margin: auto;
 
-    @include respond(tab-port) {
-        width: 500px;
-    }
+	// @include respond(tab-port) {
+	//     width: 500px;
+	// }
 }

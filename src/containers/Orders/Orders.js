@@ -1,51 +1,63 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import firebase from "../../config/firebase";
-import Order from "../../components/Order/Order";
-import Spinner from "../../components/UI/Spinner/Spinner";
+import firebase from '../../config/firebase';
+import Order from '../../components/Order/Order';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import { fetchOrders } from '../../store/actions/';
 
 class Orders extends Component {
-    state = {
-        orders: [],
-        loading: true
-    };
+	async componentDidMount() {
+		this.props.onFetchOrder();
+	}
 
-    async componentDidMount() {
-        this.loadData();
-    }
+	// loadData = () => {
+	// 	const db = firebase.firestore();
+	// 	db.collection('orders')
+	// 		.get()
+	// 		.then(querySnapshot => {
+	// 			const items = [];
+	// 			querySnapshot.forEach(doc => {
+	// 				items.push({
+	// 					id: doc.id,
+	// 					...doc.data()
+	// 				});
+	// 			});
+	// 			this.setState({ orders: items, loading: false });
+	// 		});
+	// };
 
-    loadData = () => {
-        const db = firebase.firestore();
-        db.collection("orders")
-            .get()
-            .then(querySnapshot => {
-                const items = [];
-                querySnapshot.forEach(doc => {
-                    console.log(doc.id);
-                    items.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                this.setState({ orders: items, loading: false });
-            });
-    };
+	render() {
+		let orders = <Spinner />;
 
-    render() {
-        let orders = this.state.orders.map(order => (
-            <Order
-                ingredients={order.ingredients}
-                price={order.totalPrice}
-                key={order.id}
-            />
-        ));
+		if (!this.props.loading) {
+			orders = this.props.orders.map(order => (
+				<Order
+					ingredients={order.ingredients}
+					price={order.totalPrice}
+					key={order.id}
+				/>
+			));
+		}
 
-        if (this.state.loading) {
-            orders = <Spinner />;
-        }
-
-        return <div>{orders}</div>;
-    }
+		return <div>{orders}</div>;
+	}
 }
 
-export default Orders;
+const mapStateToProps = state => {
+	return {
+		loading: state.order.loading,
+		orders: state.order.orders
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		onFetchOrder: () => dispatch(fetchOrders())
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Orders);
